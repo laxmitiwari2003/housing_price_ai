@@ -11,8 +11,14 @@ from passlib.context import CryptContext
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-DB_PATH = BASE_DIR / "database" / "housing.db"
+
+if os.getenv("VERCEL"):
+    DB_PATH = Path("/tmp/housing.db")
+else:
+    DB_PATH = BASE_DIR / "database" / "housing.db"
+
 MODEL_PATH = BASE_DIR / "model" / "LR_Model(2).pkl"
+
 
 JWT_SECRET = os.getenv("JWT_SECRET", "dev-only-change-me-" + secrets.token_hex(16))
 JWT_ALGORITHM = "HS256"
