@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EstateIQ — Housing Price AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="toast"></div>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><div class="brand-mark">E</div><div><strong>EstateIQ</strong><small>Housing intelligence</small></div></div>
+    <nav>
+      <button class="nav-item active" data-page="dashboard"><span>⌂</span> Dashboard</button>
+      <button class="nav-item" data-page="predict"><span>✦</span> Predict price</button>
+      <button class="nav-item" data-page="properties"><span>▦</span> Properties</button>
+      <button class="nav-item" data-page="history"><span>◷</span> Prediction history</button>
+      <button class="nav-item admin-only" data-page="admin"><span>▥</span> Admin dashboard</button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="api-status"><i></i><span>API connected</span></div>
+      <button class="logout" id="logoutBtn">↪ Log out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="menu" id="menuBtn">☰</button>
+      <div class="crumb"><span id="pageKicker">Overview</span><b id="pageTitle">Dashboard</b></div>
+      <div class="top-actions">
+        <button class="icon-btn" id="themeBtn" title="Toggle appearance">◐</button><button class="icon-btn" id="refreshBtn" title="Refresh">↻</button>
+        <div class="profile"><div class="avatar" id="avatar">A</div><div><b id="userName">Guest</b><small id="userRole">User</small></div></div>
+      </div>
+    </header>
+
+    <section class="content" id="dashboardPage">
+      <div class="hero">
+        <div><span class="eyebrow">REAL ESTATE ANALYTICS</span><h1>Make every property<br><em>decision measurable.</em></h1><p>Predict housing prices, manage listings and track your valuation history from one workspace.</p><button class="primary" data-page-jump="predict">Create prediction <span>→</span></button></div>
+        <div class="hero-orb"><div class="orb-card"><small>MODEL OUTPUT</small><strong id="heroPrediction">₹ —</strong><span>Latest prediction</span></div></div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><span>Properties</span><strong id="statProperties">—</strong><small>in portfolio</small></div>
+        <div class="stat-card"><span>Predictions</span><strong id="statPredictions">—</strong><small>model evaluations</small></div>
+        <div class="stat-card"><span>Available</span><strong id="statAvailable">—</strong><small>active listings</small></div>
+        <div class="stat-card"><span>Avg. estimate</span><strong id="statAverage">₹ —</strong><small>across predictions</small></div>
+      </div>
+      <div class="grid-two">
+        <div class="panel"><div class="panel-head"><div><span class="eyebrow">RECENT</span><h3>Latest predictions</h3></div><button class="text-btn" data-page-jump="history">View all →</button></div><div id="recentPredictions" class="table-wrap"></div></div>
+        <div class="panel insight"><span class="eyebrow">MODEL INPUTS</span><h3>Four factors drive your estimate</h3>
+          <div class="factor"><b>01</b><span>Area</span><strong>sq ft</strong></div><div class="factor"><b>02</b><span>Bedrooms</span><strong>rooms</strong></div><div class="factor"><b>03</b><span>Bathrooms</span><strong>count</strong></div><div class="factor"><b>04</b><span>Parking</span><strong>spaces</strong></div>
+        </div>
+      </div>
+      <div class="panel monthly-panel">
+        <div class="panel-head"><div><span class="eyebrow">ACTIVITY OVER TIME</span><h3>Monthly valuation activity</h3><p class="muted">Predictions saved in the last six calendar months.</p></div><span class="chart-legend"><i></i> Valuations</span></div>
+        <div id="monthlyChart" class="monthly-chart" role="img" aria-label="Monthly valuation activity chart"></div>
+      </div>
+    </section>
+
+    <section class="content page-hidden" id="predictPage">
+      <div class="section-heading"><div><span class="eyebrow">VALUATION ENGINE</span><h2>Predict a property price</h2><p>Enter the four numeric inputs expected by your uploaded Linear Regression model.</p></div></div>
+      <div class="prediction-layout">
+        <form class="panel form-panel" id="predictionForm">
+          <div class="slider-field"><div class="slider-title"><label for="areaRange">Area <b id="areaValue">1500 sq ft</b></label></div><input id="areaRange" type="range" min="300" max="6000" step="50" value="1500"><input name="area_sqft" id="areaInput" type="number" min="1" value="1500" required></div>
+          <div class="form-grid slider-grid">
+            <label>Bedrooms <b id="bedroomValue">3</b><input id="bedroomRange" type="range" name="bedrooms" min="0" max="10" step="1" value="3" required></label>
+            <label>Bathrooms <b id="bathroomValue">2</b><input id="bathroomRange" type="range" name="bathrooms" min="0" max="8" step="0.5" value="2" required></label>
+            <label>Parking spaces <b id="parkingValue">2</b><input id="parkingRange" type="range" name="parking_spaces" min="0" max="6" step="1" value="2" required></label>
+          </div>
+          <div class="live-summary" id="liveSummary"><span>YOUR PROPERTY SNAPSHOT</span><strong>1,500 sq ft · 3 bed · 2 bath</strong><small>2 parking spaces</small></div>
+          <label>Link to property (optional)<select name="property_id" id="predictionProperty"><option value="">Standalone prediction</option></select></label>
+          <button class="primary full" type="submit">Run AI valuation <span>→</span></button>
+          <p class="form-note">The model is used exactly as provided. Currency display is INR and can be changed in the frontend formatter.</p>
+        </form>
+        <div class="result-card" id="predictionResult"><span class="eyebrow">ESTIMATED VALUE</span><div class="result-empty">Your estimated price<br>will appear here.</div><p class="result-disclaimer">Estimates are indicative only and are not guaranteed market prices.</p></div>
+      </div>
+    </section>
+
+    <section class="content page-hidden" id="propertiesPage">
+      <div class="section-heading row"><div><span class="eyebrow">PORTFOLIO</span><h2>Property records</h2><p>Add, search and manage your property inventory.</p></div><button class="primary" id="addPropertyBtn">+ Add property</button></div>
+      <div class="market-toolbar"><input id="propertySearch" placeholder="Search homes, areas or cities…"><select id="cityFilter"><option value="">All locations</option></select><select id="typeFilter"><option value="">All property types</option><option>House</option><option>Apartment</option><option>Villa</option><option>Plot</option><option>Commercial</option></select><select id="statusFilter"><option value="">All statuses</option><option>Available</option><option>Sold</option><option>Pending</option></select><select id="priceFilter"><option value="">Any asking price</option><option value="5000000">Up to ₹50 lakh</option><option value="10000000">Up to ₹1 crore</option><option value="20000000">Up to ₹2 crore</option></select><button class="secondary" id="favoritesOnlyBtn">♡ Favorites</button></div>
+      <div class="market-summary"><span id="propertyCount">Loading properties…</span><span id="compareCount">Select up to 3 homes to compare</span><button class="primary" id="compareBtn" disabled>Compare selected</button></div>
+      <div id="propertyCards" class="property-cards"></div>
+      <details class="table-fallback"><summary>View properties as a table</summary><div class="panel table-panel"><div id="propertyTable" class="table-wrap"></div></div></details>
+    </section>
+
+    <section class="content page-hidden" id="historyPage">
+      <div class="section-heading row"><div><span class="eyebrow">AUDIT TRAIL</span><h2>Prediction history</h2><p>Every valuation is stored for authenticated users.</p></div><button class="secondary" id="exportHistoryBtn">↓ Export CSV</button></div>
+      <div class="panel table-panel"><div id="historyTable" class="table-wrap"></div></div>
+    </section>
+
+    <section class="content page-hidden" id="adminPage">
+      <div class="section-heading"><div><span class="eyebrow">CONTROL CENTER</span><h2>Admin dashboard</h2><p>Portfolio and usage overview for administrators.</p></div></div>
+      <div class="stat-grid admin-stats"><div class="stat-card"><span>Users</span><strong id="adminUsers">—</strong></div><div class="stat-card"><span>Properties</span><strong id="adminProperties">—</strong></div><div class="stat-card"><span>Predictions</span><strong id="adminPredictions">—</strong></div><div class="stat-card"><span>Sold</span><strong id="adminSold">—</strong></div></div>
+      <div class="panel user-record-panel"><div class="panel-head"><div><span class="eyebrow">USER MANAGEMENT</span><h3>Registered user records</h3><p class="muted">Account details for administration. Passwords are never displayed.</p></div><button class="secondary" id="exportUsersBtn">↓ Export users</button></div><div id="adminUsersTable" class="table-wrap"><div class="empty">Loading user records…</div></div></div>
+      <div class="panel"><span class="eyebrow">SYSTEM</span><h3>Serverless-ready architecture</h3><p class="muted">FastAPI exposes stateless REST endpoints, while the Flask service provides a traditional WSGI option. SQLite is the local default; swap it for PostgreSQL/Supabase/Neon in production.</p></div>
+    </section>
+  </main>
+</div>
+
+<div class="modal hidden" id="propertyModal"><div class="modal-card"><button class="modal-close" id="closeModal">×</button><span class="eyebrow">PROPERTY RECORD</span><h2 id="modalTitle">Add property</h2>
+<form id="propertyForm"><input type="hidden" name="id">
+<div class="form-grid"><label>Title<input name="title" required></label><label>Location<input name="location" list="indiaCities" placeholder="Choose or type a city" required><datalist id="indiaCities"><option>Indore</option><option>Bhopal</option><option>Ujjain</option><option>Dewas</option><option>Jabalpur</option><option>Gwalior</option><option>Mumbai</option><option>Pune</option><option>Nagpur</option><option>Nashik</option><option>Delhi</option><option>Noida</option><option>Gurugram</option><option>Jaipur</option><option>Ahmedabad</option><option>Surat</option><option>Vadodara</option><option>Bengaluru</option><option>Hyderabad</option><option>Chennai</option><option>Kolkata</option><option>Lucknow</option><option>Kanpur</option><option>Chandigarh</option><option>Kochi</option><option>Coimbatore</option><option>Visakhapatnam</option><option>Patna</option><option>Raipur</option><option>Amritsar</option></datalist></label><label>Property type<select name="property_type"><option>House</option><option>Apartment</option><option>Villa</option><option>Plot</option><option>Commercial</option></select></label><label>Status<select name="status"><option>Available</option><option>Pending</option><option>Sold</option></select></label><label>Area (sq ft)<input name="area_sqft" type="number" required></label><label>Bedrooms<input name="bedrooms" type="number" min="0" required></label><label>Bathrooms<input name="bathrooms" type="number" min="0" step=".5" required></label><label>Parking<input name="parking_spaces" type="number" min="0" required></label><label>Asking price (₹)<input name="asking_price" type="number" min="0" step="1000" placeholder="Optional"></label><label>Photo URL (optional)<input name="photo_url" type="url" placeholder="https://…"></label></div>
+<label>Description<textarea name="description" rows="3"></textarea></label><button class="primary full">Save property</button></form></div></div>
+
+<div class="modal hidden" id="detailsModal"><div class="modal-card compare-modal"><button class="modal-close" id="closeDetails">×</button><span class="eyebrow">PROPERTY OVERVIEW</span><div id="propertyDetailsContent"></div></div></div>
+<div class="modal hidden" id="compareModal"><div class="modal-card compare-modal"><button class="modal-close" id="closeCompare">×</button><span class="eyebrow">SIDE-BY-SIDE</span><h2>Compare properties</h2><div id="compareContent"></div></div></div>
+<script src="app.js"></script>
+</body></html>
