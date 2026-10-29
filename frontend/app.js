@@ -1,4 +1,4 @@
-const API = localStorage.getItem("estate_api") || "http://127.0.0.1:5000/api";
+const API = "https://housing-price-ai-vhdr.vercel.app/api";
 let token = localStorage.getItem("estate_token") || "";
 let user = JSON.parse(localStorage.getItem("estate_user") || "null");
 const $ = s => document.querySelector(s);
